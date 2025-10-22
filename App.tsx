@@ -9,6 +9,7 @@ import { generateImageFromPrompt } from './services/geminiService';
 const App: React.FC = () => {
   const [prompt, setPrompt] = useState<string>('');
   const [aspectRatio, setAspectRatio] = useState<string>('1:1');
+  const [model, setModel] = useState<string>('imagen-4.0-generate-001');
   const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,7 +40,7 @@ const App: React.FC = () => {
     setGeneratedImageUrl(null);
 
     try {
-      const imageUrl = await generateImageFromPrompt(prompt, aspectRatio);
+      const imageUrl = await generateImageFromPrompt(prompt, aspectRatio, model);
       setGeneratedImageUrl(imageUrl);
     } catch (err) {
       console.error(err);
@@ -52,7 +53,7 @@ const App: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [prompt, aspectRatio]);
+  }, [prompt, aspectRatio, model]);
 
   if (!apiKeyReady) {
     return (
@@ -92,6 +93,8 @@ const App: React.FC = () => {
               setPrompt={setPrompt}
               aspectRatio={aspectRatio}
               setAspectRatio={setAspectRatio}
+              model={model}
+              setModel={setModel}
               onSubmit={handleGenerateImage}
               isLoading={isLoading}
             />

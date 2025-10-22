@@ -1,4 +1,3 @@
-
 import React from 'react';
 import SparklesIcon from './icons/SparklesIcon';
 
@@ -7,17 +6,26 @@ interface PromptFormProps {
   setPrompt: (prompt: string) => void;
   aspectRatio: string;
   setAspectRatio: (ratio: string) => void;
+  model: string;
+  setModel: (model: string) => void;
   onSubmit: () => void;
   isLoading: boolean;
 }
 
 const aspectRatios = ['1:1', '16:9', '9:16', '4:3', '3:4'];
+const models = [
+  { id: 'imagen-4.0-generate-001', name: 'جودة عالية (Imagen)' },
+  { id: 'gemini-2.5-flash-image', name: 'سريع (Gemini Flash)' },
+];
+
 
 const PromptForm: React.FC<PromptFormProps> = ({
   prompt,
   setPrompt,
   aspectRatio,
   setAspectRatio,
+  model,
+  setModel,
   onSubmit,
   isLoading,
 }) => {
@@ -28,6 +36,29 @@ const PromptForm: React.FC<PromptFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      <div>
+        <label className="block text-lg font-medium text-gray-300 mb-2">
+          اختر نموذج التوليد
+        </label>
+        <div className="grid grid-cols-2 gap-3">
+          {models.map((m) => (
+            <button
+              key={m.id}
+              type="button"
+              onClick={() => setModel(m.id)}
+              disabled={isLoading}
+              className={`py-2 px-4 rounded-lg font-semibold text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-purple-500 ${
+                model === m.id
+                  ? 'bg-purple-600 text-white shadow-lg'
+                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+              }`}
+            >
+              {m.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div>
         <label htmlFor="prompt" className="block text-lg font-medium text-gray-300 mb-2">
           صف الصورة التي تريد إنشائها
@@ -44,28 +75,30 @@ const PromptForm: React.FC<PromptFormProps> = ({
         />
       </div>
 
-      <div>
-        <label className="block text-lg font-medium text-gray-300 mb-2">
-          نسبة الأبعاد
-        </label>
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-          {aspectRatios.map((ratio) => (
-            <button
-              key={ratio}
-              type="button"
-              onClick={() => setAspectRatio(ratio)}
-              disabled={isLoading}
-              className={`py-2 px-4 rounded-lg font-semibold text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-purple-500 ${
-                aspectRatio === ratio
-                  ? 'bg-purple-600 text-white shadow-lg'
-                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-              }`}
-            >
-              {ratio}
-            </button>
-          ))}
+      {model === 'imagen-4.0-generate-001' && (
+        <div>
+          <label className="block text-lg font-medium text-gray-300 mb-2">
+            نسبة الأبعاد
+          </label>
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+            {aspectRatios.map((ratio) => (
+              <button
+                key={ratio}
+                type="button"
+                onClick={() => setAspectRatio(ratio)}
+                disabled={isLoading}
+                className={`py-2 px-4 rounded-lg font-semibold text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-purple-500 ${
+                  aspectRatio === ratio
+                    ? 'bg-purple-600 text-white shadow-lg'
+                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                }`}
+              >
+                {ratio}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="pt-2">
         <button

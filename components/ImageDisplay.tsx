@@ -1,6 +1,6 @@
-
 import React from 'react';
 import PhotoIcon from './icons/PhotoIcon';
+import DownloadIcon from './icons/DownloadIcon';
 
 interface ImageDisplayProps {
   imageUrl: string | null;
@@ -36,13 +36,36 @@ const ImageDisplay: React.FC<ImageDisplayProps> = ({ imageUrl, isLoading, prompt
   }
 
   if (imageUrl) {
+    const handleDownload = () => {
+      const link = document.createElement('a');
+      link.href = imageUrl;
+      // Create a user-friendly filename from the prompt
+      const fileName = prompt.trim().toLowerCase().split(/\s+/).slice(0, 5).join('-') || 'generated-image';
+      link.download = `${fileName}.jpeg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    };
+
     return (
-      <div className="w-full aspect-square bg-gray-900 rounded-lg overflow-hidden shadow-lg border border-gray-700">
-        <img
-          src={imageUrl}
-          alt={prompt}
-          className="w-full h-full object-contain"
-        />
+      <div className="space-y-4">
+        <div className="w-full aspect-square bg-gray-900 rounded-lg overflow-hidden shadow-lg border border-gray-700">
+          <img
+            src={imageUrl}
+            alt={prompt}
+            className="w-full h-full object-contain"
+          />
+        </div>
+        <div className="text-center">
+          <button
+            onClick={handleDownload}
+            className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+            aria-label="تحميل الصورة"
+          >
+            <DownloadIcon className="w-5 h-5" />
+            <span>تحميل الصورة</span>
+          </button>
+        </div>
       </div>
     );
   }
