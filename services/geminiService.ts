@@ -1,15 +1,15 @@
 
 import { GoogleGenAI } from "@google/genai";
 
-const API_KEY = process.env.API_KEY;
-
-if (!API_KEY) {
-  throw new Error("API_KEY environment variable not set");
-}
-
-const ai = new GoogleGenAI({ apiKey: API_KEY });
-
 export const generateImageFromPrompt = async (prompt: string, aspectRatio: string): Promise<string> => {
+  const API_KEY = process.env.API_KEY;
+
+  if (!API_KEY) {
+    throw new Error("API_KEY_INVALID: API_KEY environment variable not set.");
+  }
+
+  const ai = new GoogleGenAI({ apiKey: API_KEY });
+
   try {
     const response = await ai.models.generateImages({
         model: 'imagen-4.0-generate-001',
@@ -29,6 +29,9 @@ export const generateImageFromPrompt = async (prompt: string, aspectRatio: strin
     }
   } catch (error) {
     console.error("Error calling Gemini API:", error);
+    if (error instanceof Error && error.message.includes("Requested entity was not found.")) {
+      throw new Error("API_KEY_INVALID: " + error.message);
+    }
     throw new Error("Failed to generate image from Gemini API.");
   }
 };
